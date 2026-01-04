@@ -55,7 +55,10 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
       // Try to call the RAG API
       const response = await fetch("https://echo-production-6fef.up.railway.app/api/query", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept": "application/json",
+        },
         body: JSON.stringify({ question: userMessage.content }),
       });
 
@@ -65,6 +68,8 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
         const data = await response.json();
         assistantContent = data.answer || "I couldn't find relevant information.";
       } else {
+        const errorText = await response.text();
+        console.error("RAG API error:", response.status, errorText);
         // Fallback response
         assistantContent = `I'm currently in demo mode. The pulse score is tracking market sentiment in real-time. Try asking about specific trends or check the dashboard for live metrics!`;
       }
