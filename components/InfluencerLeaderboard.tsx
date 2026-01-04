@@ -29,7 +29,7 @@ export default function InfluencerLeaderboard({
   useEffect(() => {
     const fetchInfluencers = async () => {
       try {
-        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://echo-production-6fef.up.railway.app";
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || "https://echo-production-6fef.up.railway.app:8080";
         const controller = new AbortController();
         const timeoutId = setTimeout(() => controller.abort(), 3000);
 

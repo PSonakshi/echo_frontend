@@ -52,7 +52,7 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
 
     try {
       // Try to call the RAG API
-      const response = await fetch("https://echo-production-6fef.up.railway.app/api/query", {
+      const response = await fetch("https://echo-production-6fef.up.railway.app:8080/api/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),
@@ -78,10 +78,11 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       // Offline fallback
+      console.error("Chat API error:", error);
       const fallbackMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: "assistant",
-        content: "I'm currently offline. Please check your connection to the backend server.",
+        content: `Connection error: ${error instanceof Error ? error.message : "Unable to reach the server"}. Please check if the backend is running.`,
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, fallbackMessage]);
