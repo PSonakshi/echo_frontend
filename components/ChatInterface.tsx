@@ -52,7 +52,7 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
 
     try {
       // Try to call the RAG API
-      const response = await fetch("http://localhost:8000/api/query", {
+      const response = await fetch("https://echo-production-6fef.up.railway.app/api/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),

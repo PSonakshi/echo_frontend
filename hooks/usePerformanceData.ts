@@ -39,7 +39,7 @@ const DEFAULT_METRICS: PerformanceMetrics = {
 };
 
 export const usePerformanceData = (
-  apiUrl: string = "http://localhost:8000",
+  apiUrl: string = "https://echo-production-6fef.up.railway.app",
   pollInterval: number = 5000
 ) => {
   const [metrics, setMetrics] = useState<PerformanceMetrics>(DEFAULT_METRICS);
