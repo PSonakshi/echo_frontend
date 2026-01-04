@@ -2,6 +2,7 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import { Send, Bot, User } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 type Message = {
   id: string;
@@ -52,7 +53,7 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
 
     try {
       // Try to call the RAG API
-      const response = await fetch("https://echo-production-6fef.up.railway.app:8080/api/query", {
+      const response = await fetch("https://echo-production-6fef.up.railway.app/api/query", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ question: userMessage.content }),
@@ -78,11 +79,10 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
       setMessages((prev) => [...prev, assistantMessage]);
     } catch (error) {
       // Offline fallback
-      console.error("Chat API error:", error);
       const fallbackMessage: Message = {
         id: `assistant-${Date.now()}`,
         role: "assistant",
-        content: `Connection error: ${error instanceof Error ? error.message : "Unable to reach the server"}. Please check if the backend is running.`,
+        content: "I'm currently offline. Please check your connection to the backend server.",
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, fallbackMessage]);
@@ -119,7 +119,24 @@ const ChatInterface = React.memo(function ChatInterface({ expanded = false }: Pr
                   : "bg-white/5 text-foreground/90"
               }`}
             >
-              {msg.content}
+              {msg.role === "assistant" ? (
+                <ReactMarkdown
+                  components={{
+                    p: ({ children }) => <p className="mb-2 last:mb-0">{children}</p>,
+                    strong: ({ children }) => <strong className="font-semibold">{children}</strong>,
+                    em: ({ children }) => <em className="italic">{children}</em>,
+                    ul: ({ children }) => <ul className="list-disc list-inside mb-2">{children}</ul>,
+                    ol: ({ children }) => <ol className="list-decimal list-inside mb-2">{children}</ol>,
+                    li: ({ children }) => <li className="mb-1">{children}</li>,
+                    code: ({ children }) => <code className="bg-white/10 px-1 rounded text-xs">{children}</code>,
+                    a: ({ href, children }) => <a href={href} className="text-softBlue underline" target="_blank" rel="noopener noreferrer">{children}</a>,
+                  }}
+                >
+                  {msg.content}
+                </ReactMarkdown>
+              ) : (
+                msg.content
+              )}
             </div>
             {msg.role === "user" && (
               <div className="w-6 h-6 rounded-full bg-emerald-400/20 flex items-center justify-center flex-shrink-0">
